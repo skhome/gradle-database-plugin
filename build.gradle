@@ -1,0 +1,41 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'codenarc'
+apply plugin: 'maven'
+
+group = 'net.skhome'
+description = 'A gradle plugin to execute SQL files against a database.'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    groovy localGroovy()
+    compile gradleApi()
+
+    testCompile group: 'junit', name: 'junit', version: '4.10'
+}
+
+jar {
+    manifest {
+        attributes("Implementation-Title": project.name,
+                   "Implementation-Version": project.version,
+                   "Built-By": System.properties['user.name'])
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+task groovydocJar(type:  Jar, dependsOn: groovydoc) {
+	classifier = 'groovydoc'
+	from groovydoc.destinationDir
+}
+
+artifacts {
+	archives sourcesJar
+	archives groovydocJar
+}
