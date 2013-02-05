@@ -15,8 +15,14 @@ public class DatabasePluginTasksTest {
 		project.apply plugin: 'database'
 
 		project.database {
-			createScripts = project.files("src/main/db/create.sql")
-			initScripts = project.files("src/main/db/data.sql")
+			steps {
+				create {
+					script file: 'src/main/db/create.sql'
+				}
+				init {
+					script file: 'src/main/db/data.sql'
+				}
+			}
 			environments {
 				local {
 					driver = "driver"

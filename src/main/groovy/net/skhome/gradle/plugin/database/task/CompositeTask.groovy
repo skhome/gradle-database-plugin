@@ -6,16 +6,16 @@ import org.gradle.api.tasks.TaskAction
 
 class CompositeTask extends DefaultTask {
 
-	List<Task> subtasks = []
+	List<Task> subTasks = []
 
 	@TaskAction
 	public executeSubtasks() {
-		if (subtasks.empty) {
-			logger.warn("composite task ${path} has no subtasks.")
+		if (subTasks.empty) {
+			logger.warn("composite task ${path} has no sub tasks.")
 		}
-		subtasks.each { Task subtask ->
-			println subtask.path
-			subtask.execute()
+		subTasks.each { Task subTask ->
+			println subTask.path
+			subTask.execute()
 		}
 	}
 

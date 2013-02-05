@@ -1,4 +1,4 @@
-package net.skhome.gradle.plugin.database
+package net.skhome.gradle.plugin.database.model
 
 class Environment {
 

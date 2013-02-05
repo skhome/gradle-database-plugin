@@ -1,8 +1,8 @@
 package net.skhome.gradle.plugin.database.task
 import groovy.sql.Sql
-import net.skhome.gradle.plugin.database.Environment
+import net.skhome.gradle.plugin.database.model.Environment
+import net.skhome.gradle.plugin.database.model.Script
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskAction
 
 import java.sql.Driver
@@ -12,7 +12,7 @@ class DatabaseTask extends DefaultTask {
 
 	Environment environment
 
-	FileCollection scripts
+	List<Script> scripts
 
 	@TaskAction
 	public executeScripts() {
@@ -26,9 +26,20 @@ class DatabaseTask extends DefaultTask {
 		registerDriver(environment.driver)
 
 		def sql = Sql.newInstance(environment.url, environment.username, environment.password)
-		scripts.each { File script ->
-			logger.info("Executing: ${script.name}")
-			sql.execute(script.text)
+		
+		scripts.each { script ->
+			final File file = project.file(script.filename)
+			logger.info("Executing: ${file.name}")
+			if (script.separator != null) {
+				file.text.split(script.separator).each { statement ->
+					if (!statement.trim().isEmpty()) {
+						logger.debug(statement)
+						sql.execute(statement)
+					}
+				}
+			} else {
+				sql.execute(file.text)
+			}
 		}
 	}
 

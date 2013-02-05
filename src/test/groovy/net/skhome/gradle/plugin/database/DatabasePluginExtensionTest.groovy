@@ -1,7 +1,7 @@
 package net.skhome.gradle.plugin.database
 
+import net.skhome.gradle.plugin.database.model.Environment
 import org.gradle.api.Project
-import org.gradle.api.file.FileCollection
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
@@ -61,12 +61,15 @@ class DatabasePluginExtensionTest {
 
 		// when
 		project.database {
-			createScripts = project.files("src/main/db/create.sql")
+			steps {
+				create {
+					script file: 'src/main/db/create.sql', separator: ';'
+				}
+			}
 		}
 
 		// then
-		assert project.database.createScripts instanceof FileCollection
-		assert !project.database.createScripts.empty
+		assert project.database.steps.create.scripts
 
 	}
 
@@ -75,12 +78,15 @@ class DatabasePluginExtensionTest {
 
 		// when
 		project.database {
-			initScripts = project.files("src/main/db/master-data.sql")
+			steps {
+				init {
+					script file: 'src/main/db/master-data.sql', separator: ';'
+				}
+			}
 		}
 
 		// then
-		assert project.database.initScripts instanceof FileCollection
-		assert !project.database.initScripts.empty
+		assert project.database.steps.init.scripts
 
 	}
 
@@ -89,12 +95,15 @@ class DatabasePluginExtensionTest {
 
 		// when
 		project.database {
-			dropScripts = project.files("src/main/db/drop-schema.sql")
+			steps {
+				drop {
+					script file: 'src/main/db/drop-schema.sql'
+				}
+			}
 		}
 
 		// then
-		assert project.database.dropScripts instanceof FileCollection
-		assert !project.database.dropScripts.empty
+		assert project.database.steps.drop.scripts
 
 	}
 
