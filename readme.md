@@ -1,41 +1,42 @@
+### Intended DSL
 
-database {
+	database {
 
-	steps {
+		steps {
 
-		drop {
-			script file: 'src/main/db/ddl/reset-schema.sql', separator: ';'
+			drop {
+				script file: 'src/main/db/ddl/reset-schema.sql', separator: ';'
+			}
+
+			create {
+				script file: 'src/main/db/ddl/create-tables.sql', separator: ';'
+				script file: 'src/main/db/ddl/create-sequences.sql', separator: ';'
+			}
+
+			init {
+				script file: 'src/main/db/data/master-data.sql', separator: ';'
+				script file: 'src/test/db/data/test-data.sql', separator: ';'
+			}
+
 		}
 
-		create {
-			script file: 'src/main/db/ddl/create-tables.sql', separator: ';'
-			script file: 'src/main/db/ddl/create-sequences.sql', separator: ';'
-		}
+		environments {
 
-		init {
-			script file: 'src/main/db/data/master-data.sql', separator: ';'
-			script file: 'src/test/db/data/test-data.sql', separator: ';'
-		}
+			local {
+				driver   = 'oracle.jdbc.OracleDriver'
+				url      = 'jdbc:oracle:thin:@[HOST][:PORT]:SID'
+				username = 'username'
+				password = 'password'
+			}
 
+			development {
+				driver   = 'oracle.jdbc.OracleDriver'
+				url      = 'jdbc:oracle:thin:@[HOST][:PORT]:SID'
+				username = 'username'
+				password = 'password'
+			}
+		}
 	}
-
-	environments {
-
-		local {
-			driver   = 'oracle.jdbc.OracleDriver'
-			url      = 'jdbc:oracle:thin:@[HOST][:PORT]:SID'
-			username = 'username'
-			password = 'password'
-		}
-
-		development {
-			driver   = 'oracle.jdbc.OracleDriver'
-			url      = 'jdbc:oracle:thin:@[HOST][:PORT]:SID'
-			username = 'username'
-			password = 'password'
-		}
-	}
-}
 
 
 This should create the following tasks:
@@ -45,7 +46,7 @@ dropLocalDatabase
 	from all schema objects.
 
 createLocalDatabase
-	This task will execute all create scripts. This should be used to populate the schema with
+	This task wil   l execute all create scripts. This should be used to populate the schema with
 	schema objects (tables, views, sequences, ...)
 
 initLocalDatabase
